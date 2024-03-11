@@ -1,0 +1,93 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.main{
+    display:flex;
+}
+.nav_style{
+    width: 18%;
+    padding: 1vw;
+    background: #dfdfdf;
+    height: 90vh;
+}
+.nav_style li a{
+    border: 1px solid #ffffff !important;
+    margin-bottom: 1vw;
+}
+.nav_style li a span{
+    font-size: x-small;
+    display: inline-block;
+}
+.nav_style li a span:nth-child(1){
+    width:87%;
+}
+.nav_style li a span:nth-child(2){
+    width:6%;
+    text-align:right;
+}
+.content_style{
+    width: 82%;
+    margin: 0vw 1vw;
+}
+header{
+    padding: 1vw;
+    border-bottom: 1px solid #d9d9d9;
+    margin-bottom: 1vw;
+}
+header .search_box{
+    display:flex;
+
+}
+header .search_box p:nth-child(1){
+    width: 65%;
+}
+header .search_box p:nth-child(2){
+    width: 35%;
+    text-align:right;
+}
+header .search_box p label{
+    margin-right:1vw;
+}
+header .search_box p input{
+    display: inline-block;
+    width: 70%;
+}
+header .search_box p button{
+    display: inline-block;
+}
+.children{
+
+}
+.show_box{
+    width: 70vw !important;
+}
+.zs{
+    color: #8b908e;
+}
+.yes{
+    color:#00ff1e;
+}
+.error{
+    color:red;
+}
+.bx{
+    color:red;
+}
+.display_scroll{
+    overflow-x: auto;
+    overflow-y: auto;
+    height: 64vh;
+    width: 100%;
+}
+.text-2{
+    width:50%;
+    margin-right:2%;
+}
+.apiarist_td{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width:20vw;
+    min-width:8vw;
+}

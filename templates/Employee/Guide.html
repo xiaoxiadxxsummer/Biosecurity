@@ -1,0 +1,346 @@
+{% extends "EmployeeBase.html" %}
+
+{% block title %}
+Employee - Guide Management
+{% endblock %}
+
+{% block header %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Guide Management / </li>
+      </ol>
+    </nav>
+    <form class="row">
+        <div class=" search_box">
+          <p>
+              <label for="name">Name:</label>
+              <input type="text" class="form-control" id="name" placeholder="Search for Guide by Common name or Scientific Name">
+              <button type="button" class="btn btn-primary" onclick="search()">Search</button>
+          </p>
+          <p>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                + Add Guide
+              </button>
+          </p>
+        </div>
+    </form>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="width:50vw;margin-left: -8vw;">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Guide</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" >
+             <form action="/Guide" method="post" id="Guide">
+              <div style="display:flex;">
+                  <div class="mb-3 text-2">
+                      <label for="type" class="form-label">Bee Item Type:</label>
+                      <select class="form-control"  id="type" name="type">
+                          <option value="Pest">Pest</option>
+                          <option value="Disease">Disease</option>
+                      </select>
+                  </div>
+                  <div class="mb-3 text-2">
+                      <label for="exist" class="form-label">Whether New Zealand exists:</label>
+                      <select class="form-control"  id="exist" name="exist">
+                          <option value="1">Existence</option>
+                          <option value="0">Non-Existence</option>
+                      </select>
+                  </div>
+              </div>
+              <div style="display:flex;">
+                <div class="mb-3 text-2">
+                  <label for="commonName" class="form-label">Common Name:</label>
+                  <input type="text" class="form-control" id="commonName" name="commonName" placeholder="">
+                </div>
+                <div class="mb-3 text-2">
+                  <label for="scientificName" class="form-label">Scientific Name:</label>
+                  <input type="text" class="form-control" id="scientificName" name="scientificName" placeholder="">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                  <label for="mainFeatures" class="form-label">Main Features:</label>
+                  <input type="text" class="form-control" id="mainFeatures" name="mainFeatures" placeholder="">
+              </div>
+              <div class="mb-3">
+                  <label for="description" class="form-label">Description:</label>
+                  <textarea class="form-control" id="description" name="description" placeholder=""></textarea>
+              </div>
+
+              <div style="display:flex;">
+                <div class="mb-3 text-2">
+                  <label for="symptoms" class="form-label">Symptoms:</label>
+                  <input type="text" class="form-control" id="symptoms" name="symptoms" placeholder="">
+                </div>
+                <div class="mb-3 text-2">
+                  <label for="images" class="form-label">Graphics:</label>
+                  <input class="form-control" type="file" id="images">
+                </div>
+              </div>
+             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="save()">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- code to display list of jobs-->
+ <div class="display_scroll">
+     {% if guide_list %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="apiarist_td">Guide ID</th>
+                    <th class="apiarist_td">Bee Item Type</th>
+                    <th class="apiarist_td">Whether New Zealand exists?</th>
+                    <th class="apiarist_td">Common Name</th>
+                    <th class="apiarist_td">Scientific Name</th>
+                    <th class="apiarist_td">Main Features</th>
+                    <th class="apiarist_td">Description</th>
+                    <th class="apiarist_td">Symptoms</th>
+                    <th class="apiarist_td">Graphics</th>
+                    <th class="apiarist_td">Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for Guide in guide_list %}
+                    <tr>
+                        <td class="apiarist_td">{{Guide.gid}}</td>
+                        <td class="apiarist_td">{{Guide.type}}</td>
+                        <td class="apiarist_td">
+                              {% if Guide.exist==0 %}
+                                Non-Existence
+                              {% else %}
+                                Existence
+                              {% endif %}
+                        </td>
+                        <td class="apiarist_td">{{Guide.commonName}}</td>
+                        <td class="apiarist_td">{{Guide.scientificName}}</td>
+                        <td class="apiarist_td">{{Guide.mainFeatures}}</td>
+                        <td class="apiarist_td">{{Guide.description}}</td>
+                        <td class="apiarist_td">{{Guide.symptoms}}</td>
+                        <td class="apiarist_td">
+                            <a href="{{Guide.images}}" target="_blank">{{Guide.images}}</a>
+                        </td>
+                        <td class="apiarist_td">
+                            <a href="#" onclick="openEdit('{{Guide.gid}}','{{Guide.type}}','{{Guide.exist}}','{{Guide.commonName}}','{{Guide.scientificName}}','{{Guide.mainFeatures}}','{{Guide.description}}','{{Guide.symptoms}}')">Edit</a>
+                            <a href="#" onclick="deleteDate('{{Guide.gid}}')">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+     {% else %}
+        <h4 class="bx" style="text-align:center;">No data currently available.</h4>
+     {% endif %}
+ </div>
+
+<!--Edit-->
+<div class="modal fade" id="updateModel" tabindex="-1" aria-labelledby="updateModelLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="width:50vw;margin-left: -8vw;">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="updateModelLabel">Edit Guide</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" >
+              <input type="hidden" id="ed_gid"/>
+              <div style="display:flex;">
+                  <div class="mb-3 text-2">
+                      <label for="ed_type" class="form-label">Bee Item Type:</label>
+                      <select class="form-control"  id="ed_type" name="type">
+                          <option value="Pest">Pest</option>
+                          <option value="Disease">Disease</option>
+                      </select>
+                  </div>
+                  <div class="mb-3 text-2">
+                      <label for="ed_exist" class="form-label">Whether New Zealand exists:</label>
+                      <select class="form-control"  id="ed_exist" name="exist">
+                          <option value="1">Existence</option>
+                          <option value="0">Non-Existence</option>
+                      </select>
+                  </div>
+              </div>
+              <div style="display:flex;">
+                <div class="mb-3 text-2">
+                  <label for="ed_commonName" class="form-label">Common Name:</label>
+                  <input type="text" class="form-control" id="ed_commonName" name="commonName" placeholder="">
+                </div>
+                <div class="mb-3 text-2">
+                  <label for="ed_scientificName" class="form-label">Scientific Name:</label>
+                  <input type="text" class="form-control" id="ed_scientificName" name="scientificName" placeholder="">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                  <label for="ed_mainFeatures" class="form-label">Main Features:</label>
+                  <input type="text" class="form-control" id="ed_mainFeatures" name="mainFeatures" placeholder="">
+              </div>
+              <div class="mb-3">
+                  <label for="ed_description" class="form-label">Description:</label>
+                  <textarea class="form-control" id="ed_description" name="description" placeholder=""></textarea>
+              </div>
+
+              <div style="display:flex;">
+                <div class="mb-3 text-2">
+                  <label for="ed_symptoms" class="form-label">Symptoms:</label>
+                  <input type="text" class="form-control" id="ed_symptoms" name="ed_symptoms" placeholder="">
+                </div>
+                <div class="mb-3 text-2">
+                  <label for="ed_images" class="form-label">Graphics:</label>
+                  <input class="form-control" type="file" id="ed_images">
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="editSave()">Edit changes</button>
+          </div>
+        </div>
+      </div>
+</div>
+<script src="../../static/js/jquery.min.js" ></script>
+
+<script>
+    var file=null;
+    var file_edit=null;
+    var img=$("#images");
+    var img_edit=$("#ed_images");
+
+    img.on('change',function(){
+        var selectfile=$(this).prop('files')[0];
+        file=selectfile;
+    });
+    img_edit.on('change',function(){
+        var selectfile=$(this).prop('files')[0];
+        file_edit=selectfile;
+    });
+
+    function editSave(){
+        var commonName=document.getElementById("ed_commonName").value;
+        var scientificName=document.getElementById("ed_scientificName").value;
+        if(!scientificName || !commonName ){
+            alert("Common Name and Scientific Name are required fields!");
+            return;
+        }
+        if(file_edit){
+            let myform = new FormData();
+            myform.append('images',file_edit);
+            myform.append('file_name',file_edit.name);
+            myform.append('type',$("#ed_type").val());
+            myform.append('exist',$("#ed_exist").val());
+            myform.append('commonName',$("#ed_commonName").val());
+            myform.append('scientificName',$("#ed_scientificName").val());
+            myform.append('mainFeatures',$("#ed_mainFeatures").val());
+            myform.append('description',$("#ed_description").val());
+            myform.append('symptoms',$("#ed_symptoms").val());
+            myform.append('gid',$("#ed_gid").val());
+            $.ajax({
+                url:"/Guide",
+                method:"PUT",
+                data:myform,
+                processData: false,
+                contentType: false,
+                success:function(res){
+                    alert(res.message);
+                    if(res.status_code==200){
+                      window.location.reload();
+                    }
+                },
+                error:function(res){
+                    alert(res.responseJSON.message);
+                }
+            });
+        }else{
+            alert("Graphics cannot be empty.");
+        }
+    }
+
+   function search(){
+      var name=document.getElementById("name").value;
+      if(name){
+            window.location.href="/stateEmployee/guide/"+name;
+      }else{
+            window.location.href="/stateEmployee/guide";
+      }
+   }
+
+   function openEdit(gid,type,exist,commonName,scientificName,mainFeatures,description,symptoms){
+        $("#ed_gid").val(gid);
+        $("#ed_type").val(type);
+        $("#ed_exist").val(exist);
+        $("#ed_commonName").val(commonName);
+        $("#ed_scientificName").val(scientificName);
+        $("#ed_mainFeatures").val(mainFeatures);
+        $("#ed_description").val(description);
+        $("#ed_symptoms").val(symptoms);
+        var myModal = new bootstrap.Modal(document.getElementById('updateModel'));
+        myModal.show();
+   }
+
+   function save(){
+        var commonName=document.getElementById("commonName").value;
+        var scientificName=document.getElementById("scientificName").value;
+        if(!scientificName || !commonName ){
+            alert("CommonName and ScientificName are required fields!");
+            return;
+        }
+        if(file){
+            let myform = new FormData();
+            myform.append('images',file);
+            myform.append('file_name',file.name);
+            myform.append('type',$("#type").val());
+            myform.append('exist',$("#exist").val());
+            myform.append('commonName',$("#commonName").val());
+            myform.append('scientificName',$("#scientificName").val());
+            myform.append('mainFeatures',$("#mainFeatures").val());
+            myform.append('description',$("#description").val());
+            myform.append('symptoms',$("#symptoms").val());
+            $.ajax({
+                url:"/Guide",
+                method:"POST",
+                data:myform,
+                processData: false,
+                contentType: false,
+                success:function(res){
+                    alert(res.message);
+                    if(res.status_code==200){
+                      window.location.reload();
+                    }
+                },
+                error:function(res){
+                    alert(res.responseJSON.message);
+                }
+            });
+        }else{
+            alert("Graphics cannot be empty.");
+        }
+   }
+
+   function deleteDate(gid){
+      var bl=confirm('Are you sure you want to delete this Guide data?');
+       if(bl){
+            $.ajax({
+                url:"/Guide",
+                method:"Delete",
+                data:{"gid":gid},
+                success:function(res){
+                   alert(res.message);
+                   window.location.reload();
+                }
+            });
+       }
+   }
+
+</script>
+{% endblock %}

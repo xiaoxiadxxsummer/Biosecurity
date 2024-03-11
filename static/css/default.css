@@ -1,0 +1,45 @@
+*{
+    padding:0;
+    margin:0;
+}
+.content{
+    padding:2vw;
+}
+.content header{
+    text-align:center;
+}
+.job_row{
+    display: flex;
+}
+.job_row .job_column{
+    width:50%;
+}
+.card{
+    padding:1vw;
+}
+.card-title{
+    display:flex;
+}
+.card-title p{
+    width: 50%;
+}
+.job_card_title{
+    font-size: larger;
+}
+.job_completed_box{
+    text-align:right;
+    margin:1vw 0vw;
+}
+.details_content{
+    display:flex;
+}
+.details_content .left_box{
+    width:50%;
+}
+.details_content .left_box img{
+    height: 48vh;
+    width: 85%;
+}
+.details_content .right_box{
+    width:50%;
+}

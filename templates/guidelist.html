@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}
+    Guide List
+{% endblock %}
+
+{% block header %}
+    <h2>guide to bee pests and diseases</h2>
+{% endblock %}
+
+{% block content %}
+
+<!-- code to display list-->
+
+<div style="display:flex;  flex-wrap: wrap;justify-content: center;margin-top:3vw;">
+{% for guide in guide_list %}
+    <div class="card" style="width: 20vw;margin-right:3vw;">
+      <img src="{{guide.images}}" style="height: 32vh;" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{guide.commonName}}</h5>
+        <p class="card-text">
+            {% if guide.exist==0 %}
+                <p style="color:red;">Such bees do not exist in New Zealand.</p>
+            {% else %}
+                <p style="color:blue">These bees are found in New Zealand.</p>
+            {% endif %}
+            {{guide.mainFeatures}}
+        </p>
+        <a href="#" class="btn btn-primary" onclick="openDetails('{{guide.gid}}','{{guide.type}}','{{guide.exist}}','{{guide.commonName}}','{{guide.scientificName}}','{{guide.mainFeatures}}','{{guide.description}}','{{guide.symptoms}}','{{guide.images}}')">See More Details</a>
+      </div>
+    </div>
+{% endfor %}
+</div>
+
+<div class="modal fade" id="details_box" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="details_boxLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="details_boxLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body details_content">
+        <div class="left_box">
+            <img src="" id="details_img"/>
+        </div>
+        <div class="right_box">
+            <ul class="list-group">
+              <li class="list-group-item">
+                  <span style="font-weight: bold;">Bee Item Type:</span>
+                  <span id="type"></span>
+              </li>
+              <li class="list-group-item">
+                  <span style="font-weight: bold;">Whether New Zealand exists:</span>
+                  <span id="exist"></span>
+              </li>
+                <li class="list-group-item">
+                  <span style="font-weight: bold;">Scientific Name:</span>
+                  <span id="scientificName"></span>
+              </li>
+                <li class="list-group-item">
+                  <span style="font-weight: bold;">Main Features:</span>
+                  <span id="mainFeatures"></span>
+              </li>
+                <li class="list-group-item">
+                  <span style="font-weight: bold;">Description:</span>
+                  <span id="description"></span>
+              </li>
+              <li class="list-group-item">
+                  <span style="font-weight: bold;">Symptoms:</span>
+                  <span id="symptoms"></span>
+              </li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+    function openDetails(gid,type,exist,commonName,scientificName,mainFeatures,description,symptoms,images){
+        $('#details_box').modal('show');
+        $("#details_boxLabel").html(commonName);
+        $("#details_img").attr("src",images);
+        $("#type").html(type);
+        if(exist==0){
+            $("#exist").html(`<span style="color:red;">Such bees do not exist in New Zealand.</span>`);
+        }else{
+            $("#exist").html(`<span style="color:blue">These bees are found in New Zealand.</span>`);
+        }
+        $("#scientificName").html(scientificName);
+        $("#mainFeatures").html(mainFeatures);
+        $("#description").html(description);
+        $("#symptoms").html(symptoms);
+    }
+</script>
+{% endblock %}
